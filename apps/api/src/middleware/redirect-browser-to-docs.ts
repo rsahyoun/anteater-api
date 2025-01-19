@@ -11,7 +11,7 @@ const BROWSER_IDENTIFIERS = [
   "WebKit",
 ] as const;
 
-export const redirectBrowsersToDocs = createMiddleware(async (c, next) => {
+export const redirectBrowserToDocs = createMiddleware(async (c, next) => {
   const userAgent = c.req.header("user-agent") || "";
 
   const isBrowser = BROWSER_IDENTIFIERS.some((browser) => userAgent.includes(browser));
