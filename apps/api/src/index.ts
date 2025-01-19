@@ -6,6 +6,7 @@ import {
   ipBasedRateLimiter,
   keyVerifier,
   openapiMeta,
+  redirectBrowsersToDocs,
   referenceOgTagInjector,
 } from "$middleware";
 import { restRouter } from "$rest";
@@ -50,6 +51,7 @@ app.notFound((c) =>
 
 // Middleware configuration
 
+app.use("/", redirectBrowsersToDocs);
 app.use("/v2/*", headerInjector);
 app.use("/v2/*", keyVerifier);
 app.use("/v2/*", globalRateLimiter);
