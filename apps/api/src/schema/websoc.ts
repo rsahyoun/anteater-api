@@ -164,14 +164,32 @@ export const hourMinuteSchema = z.object({
 
 export const websocSectionMeetingSchema = z.discriminatedUnion("timeIsTBA", [
   z.object({
-    timeIsTBA: z.literal<boolean>(true),
+    timeIsTBA: z.literal<boolean>(true).openapi({
+      description: "Indicates if the meeting time is TBA",
+      example: true,
+    }),
   }),
   z.object({
     timeIsTBA: z.literal<boolean>(false),
-    bldg: z.string().array(),
-    days: z.string(),
-    startTime: hourMinuteSchema,
-    endTime: hourMinuteSchema,
+    bldg: z
+      .string()
+      .array()
+      .openapi({
+        description: "Building(s) where the section meets",
+        example: ["DBH 1100", "ICS 174"],
+      }),
+    days: z.string().openapi({
+      description: "Days of the week when the section meets",
+      example: "MWF",
+    }),
+    startTime: hourMinuteSchema.openapi({
+      description: "Start time of the meeting",
+      example: { hour: 10, minute: 0 },
+    }),
+    endTime: hourMinuteSchema.openapi({
+      description: "End time of the meeting",
+      example: { hour: 10, minute: 50 },
+    }),
   }),
 ]);
 
@@ -194,54 +212,159 @@ export const websocSectionFinalExamSchema = z.discriminatedUnion("examStatus", [
 ]);
 
 export const websocSectionSchema = z.object({
-  units: z.string(),
-  status: z.enum(websocStatuses).or(z.literal("")),
+  units: z.string().openapi({
+    description: "Number of units for the section",
+    example: "4",
+  }),
+  status: z.enum(websocStatuses).or(z.literal("")).openapi({
+    description: "Current enrollment status of the section",
+    example: "OPEN",
+  }),
   meetings: websocSectionMeetingSchema.array(),
   finalExam: websocSectionFinalExamSchema,
-  sectionNum: z.string(),
-  instructors: z.string().array(),
-  maxCapacity: z.string(),
-  sectionCode: z.string(),
-  sectionType: z.enum(websocSectionTypes),
-  numRequested: z.string(),
-  restrictions: z.string(),
-  numOnWaitlist: z.string(),
-  numWaitlistCap: z.string(),
-  sectionComment: z.string(),
-  numNewOnlyReserved: z.string(),
-  numCurrentlyEnrolled: z.object({
-    totalEnrolled: z.string(),
-    sectionEnrolled: z.string(),
+  sectionNum: z.string().openapi({
+    description: "Section number",
+    example: "A1",
   }),
-  updatedAt: z.coerce.date(),
-  webURL: z.string(),
+  instructors: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of instructors teaching this section",
+      example: ["PATTIS, R.", "SHINDLER, M."],
+    }),
+  maxCapacity: z.string().openapi({
+    description: "Maximum enrollment capacity",
+    example: "150",
+  }),
+  sectionCode: z.string().openapi({
+    description: "5-digit section code",
+    example: "34050",
+  }),
+  sectionType: z.enum(websocSectionTypes).openapi({
+    description: "Type of section",
+    example: "Lec",
+  }),
+  numRequested: z.string().openapi({
+    description: "Number of students who requested enrollment",
+    example: "160",
+  }),
+  restrictions: z.string().openapi({
+    description: "Enrollment restrictions",
+    example: "A and B",
+  }),
+  numOnWaitlist: z.string().openapi({
+    description: "Number of students on waitlist",
+    example: "10",
+  }),
+  numWaitlistCap: z.string().openapi({
+    description: "Waitlist capacity",
+    example: "20",
+  }),
+  sectionComment: z.string().openapi({
+    description: "Additional section comments",
+    example: "Same as 34060",
+  }),
+  numNewOnlyReserved: z.string().openapi({
+    description: "Number of seats reserved for new students",
+    example: "25",
+  }),
+  numCurrentlyEnrolled: z.object({
+    totalEnrolled: z.string().openapi({
+      description: "Total number of enrolled students",
+      example: "148",
+    }),
+    sectionEnrolled: z.string().openapi({
+      description: "Number of students enrolled in this section",
+      example: "148",
+    }),
+  }),
+  updatedAt: z.coerce.date().openapi({
+    description: "Last update timestamp",
+    example: "2024-03-20T12:00:00Z",
+  }),
+  webURL: z.string().openapi({
+    description: "URL to section details",
+    example: "https://www.reg.uci.edu/perl/WebSoc?...",
+  }),
 });
 
 export const websocCourseSchema = z.object({
   sections: websocSectionSchema.array(),
-  deptCode: z.string(),
-  courseTitle: z.string(),
-  courseNumber: z.string(),
-  courseComment: z.string(),
-  prerequisiteLink: z.string(),
-  updatedAt: z.coerce.date(),
+  deptCode: z.string().openapi({
+    description: "Department code",
+    example: "COMPSCI",
+  }),
+  courseTitle: z.string().openapi({
+    description: "Course title",
+    example: "PROGRAMMING WITH SOFTWARE LIBRARIES",
+  }),
+  courseNumber: z.string().openapi({
+    description: "Course number",
+    example: "161",
+  }),
+  courseComment: z.string().openapi({
+    description: "Course-level comments",
+    example: "Prerequisites required",
+  }),
+  prerequisiteLink: z.string().openapi({
+    description: "Link to prerequisite details",
+    example: "https://www.reg.uci.edu/cob/prrqcgi?term=202410&dept=COMPSCI&action=view_by_term#161",
+  }),
+  updatedAt: z.coerce.date().openapi({
+    description: "Last update timestamp",
+    example: "2024-03-20T12:00:00Z",
+  }),
 });
 
 export const websocDepartmentSchema = z.object({
   courses: websocCourseSchema.array(),
-  deptCode: z.string(),
-  deptName: z.string(),
-  deptComment: z.string(),
-  sectionCodeRangeComments: z.string().array(),
-  courseNumberRangeComments: z.string().array(),
-  updatedAt: z.coerce.date(),
+  deptCode: z.string().openapi({
+    description: "Department code",
+    example: "COMPSCI",
+  }),
+  deptName: z.string().openapi({
+    description: "Department name",
+    example: "Computer Science",
+  }),
+  deptComment: z.string().openapi({
+    description: "Department-level comments",
+    example: "See department website for more details",
+  }),
+  sectionCodeRangeComments: z
+    .string()
+    .array()
+    .openapi({
+      description: "Comments about section code ranges",
+      example: ["34000-34999: Computer Science"],
+    }),
+  courseNumberRangeComments: z
+    .string()
+    .array()
+    .openapi({
+      description: "Comments about course number ranges",
+      example: ["100-199: Upper-division courses"],
+    }),
+  updatedAt: z.coerce.date().openapi({
+    description: "Last update timestamp",
+    example: "2024-03-20T12:00:00Z",
+  }),
 });
 
 export const websocSchoolSchema = z.object({
   departments: websocDepartmentSchema.array(),
-  schoolName: z.string(),
-  schoolComment: z.string(),
-  updatedAt: z.coerce.date(),
+  schoolName: z.string().openapi({
+    description: "School name",
+    example: "Donald Bren School of Information and Computer Sciences",
+  }),
+  schoolComment: z.string().openapi({
+    description: "School-level comments",
+    example: "See school website for more information",
+  }),
+  updatedAt: z.coerce.date().openapi({
+    description: "Last update timestamp",
+    example: "2024-03-20T12:00:00Z",
+  }),
 });
 
 export const websocResponseSchema = z.object({
@@ -249,6 +372,12 @@ export const websocResponseSchema = z.object({
 });
 
 export const websocTermResponseSchema = z.object({
-  shortName: z.string(),
-  longName: z.string(),
+  shortName: z.string().openapi({
+    description: "Short form of the term (e.g., '2024 Spring')",
+    example: "2024 Spring",
+  }),
+  longName: z.string().openapi({
+    description: "Full name of the term (e.g., 'Spring Quarter 2024')",
+    example: "Spring Quarter 2024",
+  }),
 });

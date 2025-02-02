@@ -42,83 +42,310 @@ export const gradesQuerySchema = z.object({
 });
 
 export const rawGradeSchema = z.object({
-  year: z.string(),
-  quarter: z.enum(terms),
-  sectionCode: z.string(),
-  department: z.string(),
-  courseNumber: z.string(),
-  courseNumeric: z.number(),
-  geCategories: z.enum(geCategories).array(),
-  instructors: z.string().array(),
-  gradeACount: z.number(),
-  gradeBCount: z.number(),
-  gradeCCount: z.number(),
-  gradeDCount: z.number(),
-  gradeFCount: z.number(),
-  gradePCount: z.number(),
-  gradeNPCount: z.number(),
-  gradeWCount: z.number(),
-  averageGPA: z.number().nullable(),
+  year: z.string().openapi({
+    description: "Academic year of the grade record",
+    example: "2024",
+  }),
+  quarter: z.enum(terms).openapi({
+    description: "Academic quarter of the grade record",
+    example: "Fall",
+  }),
+  sectionCode: z.string().openapi({
+    description: "5-digit section code",
+    example: "34050",
+  }),
+  department: z.string().openapi({
+    description: "Department code",
+    example: "COMPSCI",
+  }),
+  courseNumber: z.string().openapi({
+    description: "Course number",
+    example: "161",
+  }),
+  courseNumeric: z.number().openapi({
+    description: "Numeric course number",
+    example: 161,
+  }),
+  geCategories: z
+    .enum(geCategories)
+    .array()
+    .openapi({
+      description: "GE categories fulfilled by this course",
+      example: ["GE-1A", "GE-2"],
+    }),
+  instructors: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of instructors who taught this section",
+      example: ["PATTIS, R.", "SHINDLER, M."],
+    }),
+  gradeACount: z.number().openapi({
+    description: "Number of A grades given",
+    example: 45,
+  }),
+  gradeBCount: z.number().openapi({
+    description: "Number of B grades given",
+    example: 32,
+  }),
+  gradeCCount: z.number().openapi({
+    description: "Number of C grades given",
+    example: 15,
+  }),
+  gradeDCount: z.number().openapi({
+    description: "Number of D grades given",
+    example: 5,
+  }),
+  gradeFCount: z.number().openapi({
+    description: "Number of F grades given",
+    example: 3,
+  }),
+  gradePCount: z.number().openapi({
+    description: "Number of Pass grades given",
+    example: 10,
+  }),
+  gradeNPCount: z.number().openapi({
+    description: "Number of No Pass grades given",
+    example: 2,
+  }),
+  gradeWCount: z.number().openapi({
+    description: "Number of Withdrawal grades given",
+    example: 1,
+  }),
+  averageGPA: z.number().nullable().openapi({
+    description: "Average GPA for the section (null if not available)",
+    example: 3.45,
+  }),
 });
 
 export const gradesOptionsSchema = z.object({
-  years: z.string().array(),
-  departments: z.string().array(),
-  sectionCodes: z.string().array(),
-  instructors: z.string().array(),
+  years: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of academic years with available grade data",
+      example: ["2024", "2023", "2022"],
+    }),
+  departments: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of departments with available grade data",
+      example: ["COMPSCI", "I&C SCI", "IN4MATX"],
+    }),
+  sectionCodes: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of available section codes",
+      example: ["34050", "34060", "34070"],
+    }),
+  instructors: z
+    .string()
+    .array()
+    .openapi({
+      description: "List of instructors who have taught courses",
+      example: ["PATTIS, R.", "SHINDLER, M.", "THORNTON, A."],
+    }),
+});
+
+export const gradesOptionsResponseSchema = z.object({
+  ok: z.literal(true).openapi({
+    description: "Indicates if the request was successful",
+    example: true,
+  }),
+  data: gradesOptionsSchema.openapi({
+    description: "Available filter options for grades queries",
+  }),
 });
 
 export const aggregateGradesSchema = z.object({
   sectionList: z
     .object({
-      year: z.string(),
-      quarter: z.enum(terms),
-      sectionCode: z.string(),
-      department: z.string(),
-      courseNumber: z.string(),
-      courseNumeric: z.number(),
-      geCategories: z.enum(geCategories).array(),
-      instructors: z.string().array(),
+      year: z.string().openapi({
+        description: "Academic year of the section",
+        example: "2024",
+      }),
+      quarter: z.enum(terms).openapi({
+        description: "Academic quarter of the section",
+        example: "Fall",
+      }),
+      sectionCode: z.string().openapi({
+        description: "5-digit section code",
+        example: "34050",
+      }),
+      department: z.string().openapi({
+        description: "Department code",
+        example: "COMPSCI",
+      }),
+      courseNumber: z.string().openapi({
+        description: "Course number",
+        example: "161",
+      }),
+      courseNumeric: z.number().openapi({
+        description: "Numeric course number",
+        example: 161,
+      }),
+      geCategories: z
+        .enum(geCategories)
+        .array()
+        .openapi({
+          description: "GE categories fulfilled by this course",
+          example: ["GE-1A", "GE-2"],
+        }),
+      instructors: z
+        .string()
+        .array()
+        .openapi({
+          description: "List of instructors who taught this section",
+          example: ["PATTIS, R.", "SHINDLER, M."],
+        }),
     })
     .array(),
   gradeDistribution: z.object({
-    gradeACount: z.number(),
-    gradeBCount: z.number(),
-    gradeCCount: z.number(),
-    gradeDCount: z.number(),
-    gradeFCount: z.number(),
-    gradePCount: z.number(),
-    gradeNPCount: z.number(),
-    gradeWCount: z.number(),
-    averageGPA: z.number().nullable(),
+    gradeACount: z.number().openapi({
+      description: "Number of A grades given",
+      example: 45,
+    }),
+    gradeBCount: z.number().openapi({
+      description: "Number of B grades given",
+      example: 32,
+    }),
+    gradeCCount: z.number().openapi({
+      description: "Number of C grades given",
+      example: 15,
+    }),
+    gradeDCount: z.number().openapi({
+      description: "Number of D grades given",
+      example: 5,
+    }),
+    gradeFCount: z.number().openapi({
+      description: "Number of F grades given",
+      example: 3,
+    }),
+    gradePCount: z.number().openapi({
+      description: "Number of Pass grades given",
+      example: 10,
+    }),
+    gradeNPCount: z.number().openapi({
+      description: "Number of No Pass grades given",
+      example: 2,
+    }),
+    gradeWCount: z.number().openapi({
+      description: "Number of Withdrawal grades given",
+      example: 1,
+    }),
+    averageGPA: z.number().nullable().openapi({
+      description: "Average GPA for the sections (null if not available)",
+      example: 3.45,
+    }),
+  }),
+});
+
+export const aggregateGradesResponseSchema = z.object({
+  ok: z.literal(true).openapi({
+    description: "Indicates if the request was successful",
+    example: true,
+  }),
+  data: aggregateGradesSchema.openapi({
+    description: "Aggregated grade distribution data",
   }),
 });
 
 export const aggregateGradeByCourseSchema = z.object({
-  department: z.string(),
-  courseNumber: z.string(),
-  gradeACount: z.number(),
-  gradeBCount: z.number(),
-  gradeCCount: z.number(),
-  gradeDCount: z.number(),
-  gradeFCount: z.number(),
-  gradePCount: z.number(),
-  gradeNPCount: z.number(),
-  gradeWCount: z.number(),
-  averageGPA: z.number().nullable(),
+  department: z.string().openapi({
+    description: "Department code",
+    example: "COMPSCI",
+  }),
+  courseNumber: z.string().openapi({
+    description: "Course number",
+    example: "161",
+  }),
+  gradeACount: z.number().openapi({
+    description: "Number of A grades given",
+    example: 45,
+  }),
+  gradeBCount: z.number().openapi({
+    description: "Number of B grades given",
+    example: 32,
+  }),
+  gradeCCount: z.number().openapi({
+    description: "Number of C grades given",
+    example: 15,
+  }),
+  gradeDCount: z.number().openapi({
+    description: "Number of D grades given",
+    example: 5,
+  }),
+  gradeFCount: z.number().openapi({
+    description: "Number of F grades given",
+    example: 3,
+  }),
+  gradePCount: z.number().openapi({
+    description: "Number of Pass grades given",
+    example: 10,
+  }),
+  gradeNPCount: z.number().openapi({
+    description: "Number of No Pass grades given",
+    example: 2,
+  }),
+  gradeWCount: z.number().openapi({
+    description: "Number of Withdrawal grades given",
+    example: 1,
+  }),
+  averageGPA: z.number().nullable().openapi({
+    description: "Average GPA for the course (null if not available)",
+    example: 3.45,
+  }),
 });
 
 export const aggregateGradeByOfferingSchema = z.object({
-  department: z.string(),
-  courseNumber: z.string(),
-  instructor: z.string(),
-  gradeACount: z.number(),
-  gradeBCount: z.number(),
-  gradeCCount: z.number(),
-  gradeDCount: z.number(),
-  gradeFCount: z.number(),
-  gradePCount: z.number(),
-  gradeNPCount: z.number(),
-  gradeWCount: z.number(),
-  averageGPA: z.number().nullable(),
+  department: z.string().openapi({
+    description: "Department code",
+    example: "COMPSCI",
+  }),
+  courseNumber: z.string().openapi({
+    description: "Course number",
+    example: "161",
+  }),
+  instructor: z.string().openapi({
+    description: "Instructor name",
+    example: "PATTIS, R.",
+  }),
+  gradeACount: z.number().openapi({
+    description: "Number of A grades given",
+    example: 45,
+  }),
+  gradeBCount: z.number().openapi({
+    description: "Number of B grades given",
+    example: 32,
+  }),
+  gradeCCount: z.number().openapi({
+    description: "Number of C grades given",
+    example: 15,
+  }),
+  gradeDCount: z.number().openapi({
+    description: "Number of D grades given",
+    example: 5,
+  }),
+  gradeFCount: z.number().openapi({
+    description: "Number of F grades given",
+    example: 3,
+  }),
+  gradePCount: z.number().openapi({
+    description: "Number of Pass grades given",
+    example: 10,
+  }),
+  gradeNPCount: z.number().openapi({
+    description: "Number of No Pass grades given",
+    example: 2,
+  }),
+  gradeWCount: z.number().openapi({
+    description: "Number of Withdrawal grades given",
+    example: 1,
+  }),
+  averageGPA: z.number().nullable().openapi({
+    description: "Average GPA for the instructor's offerings (null if not available)",
+    example: 3.45,
+  }),
 });

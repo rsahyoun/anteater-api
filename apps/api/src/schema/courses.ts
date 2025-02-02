@@ -162,28 +162,113 @@ export const courseSchema = z.object({
   department: z.string().openapi({ example: "COMPSCI" }),
   courseNumber: z.string().openapi({ example: "161" }),
   courseNumeric: z.number().int().openapi({ example: 161 }),
-  school: z
-    .string()
-    .openapi({ example: "Donald Bren School of Information and Computer Sciences" }),
+  school: z.string().openapi({
+    example: "Donald Bren School of Information and Computer Sciences",
+  }),
   title: z.string().openapi({ example: "Design and Analysis of Algorithms" }),
-  courseLevel: z.enum(outputCourseLevels).openapi({ example: "Upper Division (100-199)" }),
+  courseLevel: z.enum(outputCourseLevels).openapi({
+    example: "Upper Division (100-199)",
+  }),
   minUnits: z.number().openapi({ example: 4 }),
   maxUnits: z.number().openapi({ example: 4 }),
-  description: z.string().openapi({}),
+  description: z.string().openapi({
+    example:
+      "Design and analysis of algorithms. Complexity analysis, divide and conquer, dynamic programming, greedy algorithms, graph algorithms, randomized algorithms.",
+  }),
   departmentName: z.string().openapi({ example: "Computer Science" }),
-  instructors: instructorPreviewSchema.array(),
-  prerequisiteTree: prerequisiteTreeSchema,
-  prerequisiteText: z.string(),
-  prerequisites: coursePreviewSchema.array(),
-  dependencies: coursePreviewSchema.array(),
-  repeatability: z.string(),
-  gradingOption: z.string(),
-  concurrent: z.string(),
-  sameAs: z.string(),
-  restriction: z.string(),
-  overlap: z.string(),
-  corequisites: z.string(),
-  geList: z.enum(outputGECategories).array(),
-  geText: z.string(),
-  terms: z.string().array(),
+  instructors: z.array(
+    instructorPreviewSchema.openapi({
+      example: [
+        {
+          ucinetid: "mikes",
+          name: "Michael Shindler",
+          title: "Associate Professor of Teaching",
+          email: "mikes@uci.edu",
+          department: "Computer Science",
+          shortenedNames: ["SHINDLER, M."],
+        },
+      ],
+    }),
+  ),
+  prerequisiteTree: prerequisiteTreeSchema.openapi({
+    example: {
+      AND: [
+        {
+          prereqType: "course",
+          coreq: false,
+          courseId: "I&CSCI46",
+          minGrade: "C",
+        },
+      ],
+      OR: [
+        {
+          prereqType: "course",
+          coreq: false,
+          courseId: "COMPSCI46",
+          minGrade: "C",
+        },
+      ],
+      NOT: [
+        {
+          prereqType: "course",
+          coreq: false,
+          courseId: "COMPSCI162",
+          minGrade: "D",
+        },
+      ],
+    },
+  }),
+  prerequisiteText: z.string().openapi({
+    example: "Prerequisites: I&C SCI 46 with a grade of C or better",
+  }),
+  prerequisites: z.array(coursePreviewSchema).openapi({
+    example: [
+      {
+        id: "I&CSCI46",
+        title: "Data Structure Implementation and Analysis",
+        department: "I&C SCI",
+        courseNumber: "46",
+      },
+    ],
+  }),
+  dependencies: z.array(coursePreviewSchema).openapi({
+    example: [
+      {
+        id: "COMPSCI162",
+        title: "Formal Languages and Automata",
+        department: "COMPSCI",
+        courseNumber: "162",
+      },
+    ],
+  }),
+  repeatability: z.string().openapi({
+    example: "May be taken for credit 1 time.",
+  }),
+  gradingOption: z.string().openapi({
+    example: "Letter Grade or Pass/Not Pass",
+  }),
+  concurrent: z.string().openapi({
+    example: "Concurrent with COMPSCI H161",
+  }),
+  sameAs: z.string().openapi({
+    example: "Same as COMPSCI H161",
+  }),
+  restriction: z.string().openapi({
+    example: "School of ICS majors have first consideration for enrollment.",
+  }),
+  overlap: z.string().openapi({
+    example: "Course may not be taken after COMPSCI H161.",
+  }),
+  corequisites: z.string().openapi({
+    example: "Corequisite: MATH 2B",
+  }),
+  geList: z.array(z.enum(outputGECategories)).openapi({
+    example: ["GE II: Science and Technology"],
+  }),
+  geText: z.string().openapi({
+    example: "Fulfills General Education II: Science and Technology",
+  }),
+  terms: z.array(z.string()).openapi({
+    example: ["2024 Fall", "2024 Winter", "2024 Spring"],
+  }),
 });
