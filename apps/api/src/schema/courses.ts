@@ -37,56 +37,134 @@ export const outputGECategories = [
 ] as const;
 
 export const coursesPathSchema = z.object({
-  id: z
-    .string({ message: "Parameter 'id' is required" })
-    .openapi({ param: { name: "id", in: "path" } }),
+  id: z.string().openapi({
+    param: { name: "id", in: "path" },
+    description: "The unique identifier of the course (e.g., COMPSCI161)",
+    example: "COMPSCI161",
+  }),
 });
 
 export const batchCoursesQuerySchema = z.object({
   ids: z
-    .string({ message: "Parameter 'ids' is required" })
+    .string()
     .transform((xs) => xs.split(","))
-    .openapi({ example: "COMPSCI161,COMPSCI162" }),
+    .openapi({
+      description: "The comma-separated list of course IDs to retrieve",
+      example: "COMPSCI161,COMPSCI162",
+    }),
 });
 
 export const coursesQuerySchema = z.object({
-  department: z.string().optional(),
-  courseNumber: z.string().optional(),
-  courseNumeric: z.coerce.number().optional(),
-  titleContains: z.string().optional(),
+  department: z.string().optional().openapi({
+    description: "The academic department offering the course",
+    example: "COMPSCI",
+  }),
+  courseNumber: z.string().optional().openapi({
+    description: "The course number to search for",
+    example: "161",
+  }),
+  courseNumeric: z.coerce.number().optional().openapi({
+    description: "The numeric portion of the course number for range queries",
+    example: 161,
+  }),
+  titleContains: z.string().optional().openapi({
+    description: "The text to search for in course titles",
+    example: "Algorithm",
+  }),
   courseLevel: z
     .enum(inputCourseLevels, {
       message: "If provided, 'courseLevel' must be 'LowerDiv', 'UpperDiv', or 'Graduate'",
     })
-    .optional(),
-  minUnits: z.coerce.number().optional(),
-  maxUnits: z.coerce.number().optional(),
-  descriptionContains: z.string().optional(),
+    .optional()
+    .openapi({
+      description: "The academic level of the course",
+      example: "UpperDiv",
+    }),
+  minUnits: z.coerce.number().optional().openapi({
+    description: "The minimum number of units for the course",
+    example: 4,
+  }),
+  maxUnits: z.coerce.number().optional().openapi({
+    description: "The maximum number of units for the course",
+    example: 4,
+  }),
+  descriptionContains: z.string().optional().openapi({
+    description: "The text to search for in course descriptions",
+    example: "algorithms",
+  }),
   geCategory: z
     .enum(inputGECategories, {
       message:
         "If provided, 'geCategory' must be one of 'GE-1A', 'GE-1B', 'GE-2', 'GE-3', 'GE-4', 'GE-5A', 'GE-5B', 'GE-6', 'GE-7', or 'GE-8'",
     })
-    .optional(),
-  take: z.coerce.number().lte(100, "Page size must be less than or equal to 100").default(100),
-  skip: z.coerce.number().default(0),
+    .optional()
+    .openapi({
+      description: "The General Education category fulfilled by the course",
+      example: "GE-2",
+    }),
+  take: z.coerce
+    .number()
+    .lte(100, "Page size must be less than or equal to 100")
+    .default(100)
+    .openapi({
+      description: "The number of results to return (max 100)",
+      example: 50,
+    }),
+  skip: z.coerce.number().default(0).openapi({
+    description: "The number of results to skip for pagination",
+    example: 0,
+  }),
 });
 
 export const coursesByCursorQuerySchema = z.object({
-  department: z.string().optional(),
-  courseNumber: z.string().optional(),
-  courseNumeric: z.coerce.number().optional(),
-  titleContains: z.string().optional(),
-  courseLevel: z.enum(inputCourseLevels).optional(),
-  minUnits: z.coerce.number().optional(),
-  maxUnits: z.coerce.number().optional(),
-  descriptionContains: z.string().optional(),
-  geCategory: z.enum(inputGECategories).optional(),
-  cursor: z.string().optional().openapi({
-    description:
-      "Pagination cursor. Use the `nextCursor` value from the previous response to fetch the next page",
+  department: z.string().optional().openapi({
+    description: "The academic department offering the course",
+    example: "COMPSCI",
   }),
-  take: z.coerce.number().lte(100, "Page size must be less than or equal to 100").default(100),
+  courseNumber: z.string().optional().openapi({
+    description: "The course number to search for",
+    example: "161",
+  }),
+  courseNumeric: z.coerce.number().optional().openapi({
+    description: "The numeric portion of the course number for range queries",
+    example: 161,
+  }),
+  titleContains: z.string().optional().openapi({
+    description: "The text to search for in course titles",
+    example: "Algorithm",
+  }),
+  courseLevel: z.enum(inputCourseLevels).optional().openapi({
+    description: "The academic level of the course",
+    example: "UpperDiv",
+  }),
+  minUnits: z.coerce.number().optional().openapi({
+    description: "The minimum number of units for the course",
+    example: 4,
+  }),
+  maxUnits: z.coerce.number().optional().openapi({
+    description: "The maximum number of units for the course",
+    example: 4,
+  }),
+  descriptionContains: z.string().optional().openapi({
+    description: "The text to search for in course descriptions",
+    example: "algorithms",
+  }),
+  geCategory: z.enum(inputGECategories).optional().openapi({
+    description: "The General Education category fulfilled by the course",
+    example: "GE-2",
+  }),
+  cursor: z.string().optional().openapi({
+    description: "The pagination cursor from the previous response. Omit for first page",
+    example: "eyJpZCI6IkNPTVBTQ0kxNjEifQ==", // Base64 encoded: {"id":"COMPSCI161"}
+  }),
+  take: z.coerce
+    .number()
+    .lte(100, "Page size must be less than or equal to 100")
+    .default(100)
+    .openapi({
+      description: "The number of results to return (max 100)",
+      example: 50,
+    }),
 });
 
 export const prerequisiteSchema = z.union([
@@ -271,4 +349,24 @@ export const courseSchema = z.object({
   terms: z.array(z.string()).openapi({
     example: ["2024 Fall", "2024 Winter", "2024 Spring"],
   }),
+});
+
+// Define the cursor response schema for courses
+export const coursesByCursorResponseSchema = z.object({
+  ok: z.literal(true).openapi({
+    description: "Indicates if the request was successful",
+    example: true,
+  }),
+  data: z
+    .object({
+      items: z.array(courseSchema),
+      nextCursor: z.string().nullable().openapi({
+        description:
+          "Base64 encoded cursor containing the ID of the last item. Use this to fetch the next page. Null if there are no more results.",
+        example: "eyJpZCI6IkNPTVBTQ0kxNjIifQ==", // Base64 encoded: {"id":"COMPSCI162"}
+      }),
+    })
+    .openapi({
+      description: "Paginated list of courses with cursor-based navigation",
+    }),
 });

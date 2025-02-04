@@ -73,15 +73,33 @@ const isValidRestrictionCode = (code: string): code is (typeof restrictionCodes)
   (restrictionCodes as readonly string[]).includes(code);
 
 export const websocQuerySchema = z.object({
-  year: yearSchema,
-  quarter: z.enum(terms, { required_error: "Parameter 'quarter' is required" }),
+  year: yearSchema.openapi({
+    description: "The academic year to search for courses",
+    example: "2024",
+  }),
+  quarter: z
+    .enum(terms, {
+      message:
+        "Parameter 'quarter' must be one of 'Fall', 'Winter', 'Spring', 'Summer1', 'Summer10wk', or 'Summer2'",
+    })
+    .openapi({
+      description: "The academic quarter to search for courses",
+      example: "Fall",
+    }),
   ge: z
     .enum(geCategories)
     .optional()
     .transform((x) => (x === "ANY" ? undefined : x)),
-  department: z.string().optional(),
+  department: z.string().optional().openapi({
+    description: "The academic department offering the course",
+    example: "COMPSCI",
+  }),
   courseTitle: z.string().optional(),
-  courseNumber: courseNumberSchema.optional(),
+  courseNumber: courseNumberSchema.optional().openapi({
+    description:
+      "The course number(s) to search for. Can be a single number, multiple numbers separated by commas, or a range using a hyphen",
+    example: "161,162",
+  }),
   sectionCodes: z
     .string()
     .optional()
@@ -116,27 +134,64 @@ export const websocQuerySchema = z.object({
       }
       return parsedNums;
     }),
-  instructorName: z.string().optional(),
-  days: daysSchema.optional(),
-  building: z.string().optional(),
-  room: z.string().optional(),
+  instructorName: z.string().optional().openapi({
+    description: "The name of the instructor teaching the course",
+    example: "SHINDLER, M.",
+  }),
+  days: daysSchema.optional().openapi({
+    description: "The days of the week when the course meets",
+    example: "MWF",
+  }),
+  building: z.string().optional().openapi({
+    description: "The building where the course is held",
+    example: "DBH",
+  }),
+  room: z.string().optional().openapi({
+    description: "The room number where the course is held",
+    example: "1100",
+  }),
   division: z
     .enum(courseLevels)
     .or(z.literal("ANY"))
     .optional()
-    .transform((x) => (x === "ANY" ? undefined : x)),
+    .transform((x) => (x === "ANY" ? undefined : x))
+    .openapi({
+      description: "The academic level of the course (Lower Division, Upper Division, or Graduate)",
+      example: "UpperDiv",
+    }),
   sectionType: z
     .union([z.enum(anyArray), z.enum(websocSectionTypes)])
     .optional()
-    .transform((x) => (x === "ANY" ? undefined : x)),
+    .transform((x) => (x === "ANY" ? undefined : x))
+    .openapi({
+      description: "The type of course section (Lecture, Discussion, Lab, etc.)",
+      example: "Lec",
+    }),
   fullCourses: z
     .enum(fullCoursesOptions)
     .optional()
-    .transform((x) => (x === "ANY" ? undefined : x)),
-  cancelledCourses: z.enum(cancelledCoursesOptions).optional(),
-  units: z.optional(z.literal("VAR").or(z.string())),
-  startTime: timeSchema.optional(),
-  endTime: timeSchema.optional(),
+    .transform((x) => (x === "ANY" ? undefined : x))
+    .openapi({
+      description:
+        "How to handle courses that are full (show all, skip full courses, or show only full courses)",
+      example: "SkipFull",
+    }),
+  cancelledCourses: z.enum(cancelledCoursesOptions).optional().openapi({
+    description: "Whether to include or exclude cancelled courses in the results",
+    example: "Exclude",
+  }),
+  units: z.optional(z.literal("VAR").or(z.string())).openapi({
+    description: "The number of units for the course, or 'VAR' for variable unit courses",
+    example: "4",
+  }),
+  startTime: timeSchema.optional().openapi({
+    description: "The earliest start time for the course (in 24-hour format)",
+    example: "10:00",
+  }),
+  endTime: timeSchema.optional().openapi({
+    description: "The latest end time for the course (in 24-hour format)",
+    example: "15:00",
+  }),
   excludeRestrictionCodes: z
     .string()
     .optional()
@@ -154,6 +209,10 @@ export const websocQuerySchema = z.object({
         parsedCodes.push(code);
       }
       return parsedCodes;
+    })
+    .openapi({
+      description: "The restriction codes to exclude from the search results (comma-separated)",
+      example: "A,B,C",
     }),
 });
 

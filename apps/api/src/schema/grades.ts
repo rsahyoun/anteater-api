@@ -16,29 +16,65 @@ const geCategories = [
 ] as const;
 
 export const gradesQuerySchema = z.object({
-  year: yearSchema.optional(),
-  quarter: z.enum(terms, { invalid_type_error: "Invalid quarter provided" }).optional(),
-  instructor: z.string().optional(),
-  department: z.string().optional(),
-  courseNumber: z.string().optional(),
+  year: yearSchema.optional().openapi({
+    description: "The academic year to search for grade distributions",
+    example: "2024",
+  }),
+  quarter: z
+    .enum(terms, {
+      invalid_type_error: "Invalid quarter provided",
+    })
+    .optional()
+    .openapi({
+      description: "The academic quarter to search for grade distributions",
+      example: "Fall",
+    }),
+  instructor: z.string().optional().openapi({
+    description: "The name of the instructor who taught the course",
+    example: "PATTIS, R.",
+  }),
+  department: z.string().optional().openapi({
+    description: "The academic department that offered the course",
+    example: "COMPSCI",
+  }),
+  courseNumber: z.string().optional().openapi({
+    description: "The course number to search for",
+    example: "161",
+  }),
   sectionCode: z
     .string()
     .regex(/^\d{5}$/, { message: "Invalid sectionCode provided" })
-    .optional(),
+    .optional()
+    .openapi({
+      description: "The unique 5-digit code that identifies a specific course section",
+      example: "34050",
+    }),
   division: z
     .enum(courseLevels)
     .or(z.literal("ANY"))
     .optional()
-    .transform((x) => (x === "ANY" ? undefined : x)),
+    .transform((x) => (x === "ANY" ? undefined : x))
+    .openapi({
+      description: "The academic level of the course (Lower Division, Upper Division, or Graduate)",
+      example: "UpperDiv",
+    }),
   ge: z
     .enum(geCategories)
     .optional()
     .or(z.literal("ANY"))
-    .transform((x) => (x === "ANY" ? undefined : x)),
+    .transform((x) => (x === "ANY" ? undefined : x))
+    .openapi({
+      description: "The General Education category fulfilled by the course",
+      example: "GE-2",
+    }),
   excludePNP: z.coerce
     .string()
     .optional()
-    .transform((x) => x === "true"),
+    .transform((x) => x === "true")
+    .openapi({
+      description: "Whether to exclude Pass/No Pass grades from the results",
+      example: "true",
+    }),
 });
 
 export const rawGradeSchema = z.object({

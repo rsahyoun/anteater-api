@@ -55,23 +55,51 @@ const courseByIdRoute = createRoute({
   method: "get",
   path: "/{id}",
   request: { params: coursesPathSchema },
-  description: "Retrieves a course by its ID.",
+  description:
+    "Retrieves detailed information about a specific course, including its prerequisites, units, description, and other course details.",
   responses: {
     200: {
       content: { "application/json": { schema: responseSchema(courseSchema) } },
-      description: "Successful operation",
+      description: "Successfully retrieved the course information",
     },
     404: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Course not found",
+      description: "Course not found with the specified ID",
     },
     422: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Parameters failed validation",
+      description: "Invalid course ID format provided",
     },
     500: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Server error occurred",
+      description: "Server error occurred while retrieving the course",
+    },
+  },
+});
+
+const batchCoursesRoute = createRoute({
+  summary: "Retrieve multiple courses",
+  operationId: "batchCourses",
+  tags: ["Courses"],
+  method: "get",
+  path: "/batch",
+  request: { query: batchCoursesQuerySchema },
+  description:
+    "Retrieves information for multiple courses at once using a comma-separated list of course IDs",
+  responses: {
+    200: {
+      content: {
+        "application/json": { schema: responseSchema(courseSchema.array()) },
+      },
+      description: "Successfully retrieved the requested courses",
+    },
+    422: {
+      content: { "application/json": { schema: errorSchema } },
+      description: "Invalid course IDs format provided",
+    },
+    500: {
+      content: { "application/json": { schema: errorSchema } },
+      description: "Server error occurred while retrieving the courses",
     },
   },
 });
@@ -83,21 +111,22 @@ const coursesByFiltersRoute = createRoute({
   method: "get",
   path: "/",
   request: { query: coursesQuerySchema },
-  description: "Retrieves courses matching the given filters.",
+  description:
+    "Retrieves courses matching the given filters. Supports filtering by department, course number, title, description, GE category, and more.",
   responses: {
     200: {
       content: {
         "application/json": { schema: responseSchema(courseSchema.array()) },
       },
-      description: "Successful operation",
+      description: "Successfully retrieved the filtered courses",
     },
     422: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Parameters failed validation",
+      description: "Invalid filter parameters provided",
     },
     500: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Server error occurred",
+      description: "Server error occurred while filtering courses",
     },
   },
 });
@@ -109,21 +138,39 @@ const coursesByCursorRoute = createRoute({
   method: "get",
   path: "/",
   request: { query: coursesByCursorQuerySchema },
-  description: "Retrieves courses matching the given filters with cursor-based pagination.",
+  description:
+    "Retrieves courses matching the given filters with cursor-based pagination. Provides efficient navigation through large result sets.",
   responses: {
     200: {
       content: {
-        "application/json": { schema: cursorResponseSchema(courseSchema.array()) },
+        "application/json": {
+          schema: cursorResponseSchema(courseSchema.array()),
+          example: {
+            ok: true,
+            data: {
+              items: [
+                {
+                  id: "COMPSCI161",
+                  title: "Design and Analysis of Algorithms",
+                  department: "COMPSCI",
+                  courseNumber: "161",
+                  // ... other course fields
+                },
+              ],
+              nextCursor: "eyJpZCI6IkNPTVBTQ0kxNjEifQ==", // Base64 encoded: {"id":"COMPSCI161"}
+            },
+          },
+        },
       },
-      description: "Successful operation",
+      description: "Successfully retrieved the paginated course results",
     },
     422: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Parameters failed validation",
+      description: "Invalid filter parameters or cursor provided",
     },
     500: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Server error occurred",
+      description: "Server error occurred while retrieving courses",
     },
   },
 });
