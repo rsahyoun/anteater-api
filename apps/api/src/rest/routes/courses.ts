@@ -23,27 +23,28 @@ coursesRouter.openAPIRegistry.register("prereq", prerequisiteSchema);
 coursesRouter.openAPIRegistry.register("prereqTree", prerequisiteTreeSchema);
 
 const batchCoursesRoute = createRoute({
-  summary: "Retrieve courses with IDs",
+  summary: "Retrieve multiple courses",
   operationId: "batchCourses",
   tags: ["Courses"],
   method: "get",
   path: "/batch",
   request: { query: batchCoursesQuerySchema },
-  description: "Retrieves courses with the IDs provided",
+  description:
+    "Retrieves information for multiple courses at once using a comma-separated list of course IDs",
   responses: {
     200: {
       content: {
         "application/json": { schema: responseSchema(courseSchema.array()) },
       },
-      description: "Successful operation",
+      description: "Successfully retrieved the requested courses",
     },
     422: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Parameters failed validation",
+      description: "Invalid course IDs format provided",
     },
     500: {
       content: { "application/json": { schema: errorSchema } },
-      description: "Server error occurred",
+      description: "Server error occurred while retrieving the courses",
     },
   },
 });
@@ -73,33 +74,6 @@ const courseByIdRoute = createRoute({
     500: {
       content: { "application/json": { schema: errorSchema } },
       description: "Server error occurred while retrieving the course",
-    },
-  },
-});
-
-const batchCoursesRoute = createRoute({
-  summary: "Retrieve multiple courses",
-  operationId: "batchCourses",
-  tags: ["Courses"],
-  method: "get",
-  path: "/batch",
-  request: { query: batchCoursesQuerySchema },
-  description:
-    "Retrieves information for multiple courses at once using a comma-separated list of course IDs",
-  responses: {
-    200: {
-      content: {
-        "application/json": { schema: responseSchema(courseSchema.array()) },
-      },
-      description: "Successfully retrieved the requested courses",
-    },
-    422: {
-      content: { "application/json": { schema: errorSchema } },
-      description: "Invalid course IDs format provided",
-    },
-    500: {
-      content: { "application/json": { schema: errorSchema } },
-      description: "Server error occurred while retrieving the courses",
     },
   },
 });

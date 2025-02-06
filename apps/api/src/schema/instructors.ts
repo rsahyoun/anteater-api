@@ -40,7 +40,7 @@ export const instructorsQuerySchema = z.object({
     .lte(100, "Page size must be less than or equal to 100")
     .default(100)
     .openapi({
-      description: "Number of results to return (max 100)",
+      description: "Number of results to return",
       example: 50,
     }),
   skip: z.coerce.number().default(0).openapi({
@@ -71,7 +71,7 @@ export const instructorsByCursorQuerySchema = z.object({
     .lte(100, "Page size must be less than or equal to 100")
     .default(100)
     .openapi({
-      description: "Number of results to return (max 100)",
+      description: "Number of results to return",
       example: 50,
     }),
 });

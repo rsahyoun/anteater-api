@@ -39,7 +39,7 @@ export const outputGECategories = [
 export const coursesPathSchema = z.object({
   id: z.string().openapi({
     param: { name: "id", in: "path" },
-    description: "The unique identifier of the course (e.g., COMPSCI161)",
+    description: "The unique identifier of the course",
     example: "COMPSCI161",
   }),
 });
