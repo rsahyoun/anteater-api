@@ -151,10 +151,80 @@ const coursesByCursorRoute = createRoute({
               items: [
                 {
                   id: "COMPSCI161",
-                  title: "Design and Analysis of Algorithms",
                   department: "COMPSCI",
                   courseNumber: "161",
-                  // ... other course fields
+                  courseNumeric: 161,
+                  school: "Donald Bren School of Information and Computer Sciences",
+                  title: "Design and Analysis of Algorithms",
+                  courseLevel: "Upper Division (100-199)",
+                  minUnits: 4,
+                  maxUnits: 4,
+                  description:
+                    "Design and analysis of algorithms. Complexity analysis, divide and conquer, dynamic programming, greedy algorithms, graph algorithms, randomized algorithms.",
+                  departmentName: "Computer Science",
+                  instructors: [
+                    {
+                      ucinetid: "mikes",
+                      name: "Michael Shindler",
+                      title: "Associate Professor of Teaching",
+                      email: "mikes@uci.edu",
+                      department: "Computer Science",
+                      shortenedNames: ["SHINDLER, M."],
+                    },
+                  ],
+                  prerequisiteTree: {
+                    AND: [
+                      {
+                        prereqType: "course",
+                        coreq: false,
+                        courseId: "I&CSCI46",
+                        minGrade: "C",
+                      },
+                    ],
+                    OR: [
+                      {
+                        prereqType: "course",
+                        coreq: false,
+                        courseId: "COMPSCI46",
+                        minGrade: "C",
+                      },
+                    ],
+                    NOT: [
+                      {
+                        prereqType: "course",
+                        coreq: false,
+                        courseId: "COMPSCI162",
+                        minGrade: "D",
+                      },
+                    ],
+                  },
+                  prerequisiteText: "Prerequisites: I&C SCI 46 with a grade of C or better",
+                  prerequisites: [
+                    {
+                      id: "I&CSCI46",
+                      title: "Data Structure Implementation and Analysis",
+                      department: "I&C SCI",
+                      courseNumber: "46",
+                    },
+                  ],
+                  dependencies: [
+                    {
+                      id: "COMPSCI162",
+                      title: "Formal Languages and Automata",
+                      department: "COMPSCI",
+                      courseNumber: "162",
+                    },
+                  ],
+                  repeatability: "May be taken for credit 1 time.",
+                  gradingOption: "Letter Grade or Pass/Not Pass",
+                  concurrent: "Concurrent with COMPSCI H161",
+                  sameAs: "Same as COMPSCI H161",
+                  restriction: "School of ICS majors have first consideration for enrollment.",
+                  overlap: "Course may not be taken after COMPSCI H161.",
+                  corequisites: "Corequisite: MATH 2B",
+                  geList: ["GE II: Science and Technology"],
+                  geText: "Fulfills General Education II: Science and Technology",
+                  terms: ["2024 Spring", "2024 Winter", "2024 Fall"],
                 },
               ],
               nextCursor: "eyJpZCI6IkNPTVBTQ0kxNjEifQ==", // Base64 encoded: {"id":"COMPSCI161"}

@@ -2,34 +2,78 @@ import { z } from "@hono/zod-openapi";
 
 export const instructorsPathSchema = z.object({
   ucinetid: z
-    .string({ message: "Parameter 'ucinetid' is required" })
-    .openapi({ param: { name: "ucinetid", in: "path" } }),
+    .string({
+      required_error: "UCI NetID is required",
+    })
+    .openapi({
+      description: "The UCI NetID of the instructor",
+      example: "mikes",
+      param: { name: "ucinetid", in: "path" },
+    }),
 });
 
 export const batchInstructorsQuerySchema = z.object({
   ucinetids: z
     .string({ message: "Parameter 'ucinetids' is required" })
     .transform((xs) => xs.split(","))
-    .openapi({ example: "mikes,klefstad" }),
+    .openapi({
+      description: "Comma-separated list of UCI NetIDs to retrieve",
+      example: "mikes,klefstad",
+    }),
 });
 
 export const instructorsQuerySchema = z.object({
-  nameContains: z.string().optional(),
-  titleContains: z.string().optional(),
-  departmentContains: z.string().optional(),
-  take: z.coerce.number().lte(100, "Page size must be less than or equal to 100").default(100),
-  skip: z.coerce.number().default(0),
+  nameContains: z.string().optional().openapi({
+    description: "Filter instructors whose names contain this text (case-insensitive)",
+    example: "Shindler",
+  }),
+  titleContains: z.string().optional().openapi({
+    description: "Filter instructors whose titles contain this text (case-insensitive)",
+    example: "Professor of Teaching",
+  }),
+  departmentContains: z.string().optional().openapi({
+    description: "Filter instructors whose departments contain this text (case-insensitive)",
+    example: "Computer Science",
+  }),
+  take: z.coerce
+    .number()
+    .lte(100, "Page size must be less than or equal to 100")
+    .default(100)
+    .openapi({
+      description: "Number of results to return (max 100)",
+      example: 50,
+    }),
+  skip: z.coerce.number().default(0).openapi({
+    description: "Number of results to skip for pagination",
+    example: 0,
+  }),
 });
 
 export const instructorsByCursorQuerySchema = z.object({
   cursor: z.string().optional().openapi({
-    description: "Pagination cursor from previous response. Omit for first page.",
+    description: "Pagination cursor from previous response. Omit for first page",
     example: "eyJ1Y2luZXRpZCI6Im1pa2VzIn0=", // Base64 encoded: {"ucinetid":"mikes"}
   }),
-  nameContains: z.string().optional(),
-  titleContains: z.string().optional(),
-  departmentContains: z.string().optional(),
-  take: z.coerce.number().lte(100, "Page size must be less than or equal to 100").default(100),
+  nameContains: z.string().optional().openapi({
+    description: "Filter instructors whose names contain this text (case-insensitive)",
+    example: "Shindler",
+  }),
+  titleContains: z.string().optional().openapi({
+    description: "Filter instructors whose titles contain this text (case-insensitive)",
+    example: "Professor of Teaching",
+  }),
+  departmentContains: z.string().optional().openapi({
+    description: "Filter instructors whose departments contain this text (case-insensitive)",
+    example: "Computer Science",
+  }),
+  take: z.coerce
+    .number()
+    .lte(100, "Page size must be less than or equal to 100")
+    .default(100)
+    .openapi({
+      description: "Number of results to return (max 100)",
+      example: 50,
+    }),
 });
 
 export const coursePreviewWithTermsSchema = z.object({

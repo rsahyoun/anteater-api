@@ -13,7 +13,7 @@ export const yearSchema = z.coerce
     message: "Year must be a 4-digit positive integer",
   })
   .openapi({
-    description: "Academic year (2016-2024)",
+    description: "The academic year",
     examples: ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
     example: "2024",
   });

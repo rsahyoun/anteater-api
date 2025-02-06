@@ -4,19 +4,52 @@ import { yearSchema } from "./lib";
 
 export const enrollmentHistoryQuerySchema = z
   .object({
-    year: yearSchema.optional(),
-    quarter: z.enum(terms, { invalid_type_error: "Invalid quarter provided" }).optional(),
-    instructorName: z.string().optional(),
-    department: z.string().optional(),
-    courseNumber: z.string().optional(),
+    year: yearSchema.optional().openapi({
+      description: "Academic year",
+      example: "2024",
+    }),
+    quarter: z
+      .enum(terms, {
+        invalid_type_error: "Invalid quarter provided",
+      })
+      .optional()
+      .openapi({
+        description: "The academic quarter to search for enrollment data",
+        example: "Fall",
+        enum: ["Fall", "Winter", "Spring", "Summer1", "Summer10wk", "Summer2"],
+      }),
+    instructorName: z.string().optional().openapi({
+      description: "The name of the instructor teaching the section",
+      example: "SHINDLER, M.",
+    }),
+    department: z.string().optional().openapi({
+      description: "The academic department offering the course",
+      example: "COMPSCI",
+    }),
+    courseNumber: z.string().optional().openapi({
+      description: "The course number to search for",
+      example: "161",
+    }),
     sectionCode: z
       .string()
       .regex(/^\d{5}$/, { message: "Invalid sectionCode provided" })
       .transform((x) => Number.parseInt(x, 10))
-      .optional(),
+      .optional()
+      .openapi({
+        description: "The unique 5-digit code that identifies a specific course section",
+        example: "34050",
+        pattern: "^\\d{5}$",
+      }),
     sectionType: z
-      .enum(websocSectionTypes, { invalid_type_error: "Invalid sectionType provided" })
-      .optional(),
+      .enum(websocSectionTypes, {
+        invalid_type_error: "Invalid sectionType provided",
+      })
+      .optional()
+      .openapi({
+        description: "The type of section",
+        example: "Lec",
+        enum: ["Act", "Col", "Dis", "Fld", "Lab", "Lec", "Qiz", "Res", "Sem", "Stu", "Tap", "Tut"],
+      }),
   })
   .refine(
     (x) =>
