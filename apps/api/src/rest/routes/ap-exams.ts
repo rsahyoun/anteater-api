@@ -22,7 +22,7 @@ const apExamsRoute = createRoute({
   method: "get",
   path: "/",
   description:
-    "Get AP exam data including name mappings from College Board names to UCI Catalogue names, along with course credit and units granted for different exam scores.",
+    "Get AP exam data including mappings from College Board names to UCI Catalogue names, along with course credit for different exam scores.",
   request: { query: apExamsQuerySchema },
   responses: {
     200: {
