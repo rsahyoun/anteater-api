@@ -16,13 +16,13 @@ const apExamsRouter = new OpenAPIHono<{ Bindings: Env }>({ defaultHook });
 apExamsRouter.openAPIRegistry.register("coursesGrantedTree", coursesGrantedTreeSchema);
 
 const apExamsRoute = createRoute({
-  summary: "Retrieve AP Exam data and rewards",
+  summary: "Retrieve AP Exam names and rewards",
   operationId: "apExams",
   tags: ["AP Exams"],
   method: "get",
   path: "/",
   description:
-    "Get AP exam data including name mappings from UCI Catalogue to College Board names, along with reward information such as units granted, GE categories, and course credit for different exam scores.",
+    "Get AP exam data including name mappings from College Board names to UCI Catalogue names, along with course credit and units granted for different exam scores.",
   request: { query: apExamsQuerySchema },
   responses: {
     200: {
